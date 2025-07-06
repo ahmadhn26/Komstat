@@ -285,13 +285,17 @@ ui <- dashboardPage(
             width = 12,
             div(
               class = "video-container",
-              p("Video ini memberikan panduan singkat tentang cara menggunakan dasbor Data Harvest. Pastikan Anda mengikuti langkah-langkahnya untuk memulai analisis Anda!"),
-              tags$video(
-                src = "tutorial.mp4",
-                type = "video/mp4",
-                controls = TRUE,
-                style = "max-width: 80%; height: auto; display: block; margin: 0 auto;",
-                onError = "this.parentElement.innerHTML = '<div class=\"video-error\">Failed to load video. Please ensure the file exists at C:/MyShinyApp/www/tutorial.mp4</div>'"
+              p("Video tutorial dari YouTube ini memberikan panduan singkat tentang cara menggunakan dasbor Data Harvest. Pastikan Anda mengikuti langkah-langkahnya untuk memulai analisis Anda!"),
+              tags$iframe(
+                width = "80%",
+                height = "500",
+                src = "https://www.youtube.com/embed/lD8RyXVJ9H8?si=pxXGnRbRZuq1Ko2g",
+                title = "YouTube video player",
+                frameborder = "0",
+                allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                referrerpolicy = "strict-origin-when-cross-origin",
+                allowfullscreen = TRUE,
+                style = "display: block; margin: 0 auto;"
               )
             )
           ),

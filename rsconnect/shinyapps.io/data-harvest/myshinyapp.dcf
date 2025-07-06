@@ -1,0 +1,10 @@
+name: myshinyapp
+title:
+username: data-harvest
+account: data-harvest
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15037784
+bundleId: 10572694
+url: https://data-harvest.shinyapps.io/myshinyapp/
+version: 1

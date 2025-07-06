@@ -16,9 +16,11 @@ library(shinydashboard)
 library(shinyWidgets)
 library(fresh)
 
+
+
 # Load default data
-data_path <- "C:/MyShinyApp/dataApp.xlsx"
-original_data <- read_excel(data_path)
+data_path <- "dataApp.xlsx"
+original_data <- readxl::read_excel(data_path)
 colnames(original_data) <- tolower(colnames(original_data))
 colnames(original_data) <- gsub(" ", "_", colnames(original_data))
 original_data <- original_data %>%
@@ -92,103 +94,111 @@ ui <- dashboardPage(
     # Custom CSS for enhanced styling
     tags$head(
       tags$style(HTML("
-        .content-wrapper, .right-side {
-          background-color: #f8f9fa;
-        }
-        .box {
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          border: 1px solid #e3e6f0;
-        }
-        .box-header {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border-radius: 8px 8px 0 0;
-          padding: 15px;
-        }
-        .box-header .box-title {
-          font-size: 16px;
-          font-weight: 600;
-        }
-        .info-box {
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          border: none;
-          margin-bottom: 20px;
-        }
-        .info-box-icon {
-          border-radius: 8px 0 0 8px;
-        }
-        .btn {
-          border-radius: 6px;
-          font-weight: 500;
-          padding: 8px 16px;
-        }
-        .form-control {
-          border-radius: 6px;
-          border: 1px solid #d1d3e2;
-        }
-        .form-control:focus {
-          border-color: #667eea;
-          box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .nav-tabs-custom > .nav-tabs > li.active > a {
-          background-color: #667eea;
-          color: white;
-        }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-          background: #667eea !important;
-          border-color: #667eea !important;
-          color: white !important;
-        }
-        .sidebar-menu > li.active > a {
-          background-color: #34495e;
-          border-left: 3px solid #3498db;
-        }
-        .main-header .navbar {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .main-header .logo {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .plot-container {
-          background: white;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .video-container {
-          background: white;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          margin-bottom: 20px;
-          text-align: center;
-        }
-        .video-error {
-          color: #e74c3c;
-          font-weight: bold;
-          padding: 10px;
-          background: #f8d7da;
-          border-radius: 6px;
-        }
-        video {
-          max-width: 100%;
-          height: auto;
-          border-radius: 6px;
-        }
-        .alert-modern {
-          border-left: 4px solid #3498db;
-          background-color: #e8f4f8;
-          padding: 15px;
-          border-radius: 6px;
-          margin-bottom: 20px;
-        }
-        .alert-info-modern {
-          border-left-color: #17a2b8;
-          background-color: #e7f7f9;
-        }
-      "))
+    .content-wrapper, .right-side {
+      background-color: #f8f9fa;
+    }
+    .box {
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: 1px solid #e3e6f0;
+    }
+    .box-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px 8px 0 0;
+      padding: 15px;
+    }
+    .box-header .box-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .info-box {
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: none;
+      margin-bottom: 20px;
+    }
+    .info-box-icon {
+      border-radius: 8px 0 0 8px;
+    }
+    .btn {
+      border-radius: 6px;
+      font-weight: 500;
+      padding: 8px 16px;
+    }
+    .form-control {
+      border-radius: 6px;
+      border: 1px solid #d1d3e2;
+    }
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    .nav-tabs-custom > .nav-tabs > li.active > a {
+      background-color: #667eea;
+      color: white;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: #667eea !important;
+      border-color: #667eea !important;
+      color: white !important;
+    }
+    .sidebar-menu > li.active > a {
+      background-color: #34495e;
+      border-left: 3px solid #3498db;
+    }
+    .main-header .navbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .main-header .logo {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .plot-container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .video-container {
+      background: white;
+      border-radius: 8px;
+      padding: 10px; /* Dikurangi padding untuk memberi ruang lebih pada video */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .video-error {
+      color: #e74c3c;
+      font-weight: bold;
+      padding: 10px;
+      background: #f8d7da;
+      border-radius: 6px;
+    }
+    iframe.youtube-video {
+      max-width: 100%; /* Mengisi seluruh lebar container */
+      height: 600px; /* Tinggi tetap untuk tampilan dominan */
+      aspect-ratio: 16 / 9; /* Menjaga proporsi asli */
+      border-radius: 6px;
+      display: block;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) { /* Responsif untuk layar kecil */
+      iframe.youtube-video {
+        height: 300px; /* Mengurangi tinggi di layar kecil */
+      }
+    }
+    .alert-modern {
+      border-left: 4px solid #3498db;
+      background-color: #e8f4f8;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .alert-info-modern {
+      border-left-color: #17a2b8;
+      background-color: #e7f7f9;
+    }
+  "))
     ),
     
     tabItems(
@@ -285,17 +295,15 @@ ui <- dashboardPage(
             width = 12,
             div(
               class = "video-container",
-              p("Video tutorial dari YouTube ini memberikan panduan singkat tentang cara menggunakan dasbor Data Harvest. Pastikan Anda mengikuti langkah-langkahnya untuk memulai analisis Anda!"),
+              p("Video ini memberikan panduan singkat tentang cara menggunakan dasbor Data Harvest. Pastikan Anda mengikuti langkah-langkahnya untuk memulai analisis Anda!"),
               tags$iframe(
-                width = "80%",
-                height = "500",
-                src = "https://www.youtube.com/embed/lD8RyXVJ9H8?si=pxXGnRbRZuq1Ko2g",
-                title = "YouTube video player",
+                src = "https://www.youtube.com/embed/IsbtURyg8rM?si=aBD2MLOC8byWR9Is",
+                title = "YouTube Video Tutorial",
+                class = "youtube-video",
                 frameborder = "0",
                 allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
                 referrerpolicy = "strict-origin-when-cross-origin",
-                allowfullscreen = TRUE,
-                style = "display: block; margin: 0 auto;"
+                allowfullscreen = TRUE
               )
             )
           ),
@@ -1101,7 +1109,7 @@ server <- function(input, output, session) {
       } else if (input$test_type == "Uji Kesamaan Ragam") {
         validate(
           need(input$var_numeric, "Please select a numeric variable."),
-          need(input$var_group, "Please select a grouping variable."),
+          need(input$var_group, "Select a grouping variable."),
           need(input$var_numeric %in% colnames(dat), "Numeric variable not found in data."),
           need(input$var_group %in% colnames(dat), "Grouping variable not found in data."),
           need(is.numeric(dat[[input$var_numeric]]), "Selected numeric variable is not numeric."),

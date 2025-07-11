@@ -18,9 +18,11 @@ library(fresh)
 
 
 
+
 # Load default data
 data_path <- "dataApp.xlsx"
 original_data <- readxl::read_excel(data_path)
+file.exists("C:/MyShinyApp/dataApp.xlsx")
 colnames(original_data) <- tolower(colnames(original_data))
 colnames(original_data) <- gsub(" ", "_", colnames(original_data))
 original_data <- original_data %>%
@@ -58,6 +60,8 @@ my_theme <- create_theme(
   )
 )
 
+# ... (kode UI lainnya seperti library, custom theme, dashboardHeader, dll. tetap sama)
+
 # Enhanced UI with better structure
 ui <- dashboardPage(
   skin = "blue",
@@ -79,6 +83,7 @@ ui <- dashboardPage(
       id = "tabs",
       menuItem("Dashboard", tabName = "dashboard", icon = icon("tachometer-alt")),
       menuItem("User Guide", tabName = "user_guide", icon = icon("book")),
+      menuItem("Metadata", tabName = "metadata", icon = icon("info-circle")),
       menuItem("Data Explorer", tabName = "data", icon = icon("table")),
       menuItem("Upload Data", tabName = "upload", icon = icon("upload")),
       menuItem("Descriptive Stats", tabName = "descriptive", icon = icon("chart-bar")),
@@ -94,130 +99,152 @@ ui <- dashboardPage(
     # Custom CSS for enhanced styling
     tags$head(
       tags$style(HTML("
-    .content-wrapper, .right-side {
-      background-color: #f8f9fa;
-    }
-    .box {
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      border: 1px solid #e3e6f0;
-    }
-    .box-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-radius: 8px 8px 0 0;
-      padding: 15px;
-    }
-    .box-header .box-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
-    .info-box {
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      border: none;
-      margin-bottom: 20px;
-    }
-    .info-box-icon {
-      border-radius: 8px 0 0 8px;
-    }
-    .btn {
-      border-radius: 6px;
-      font-weight: 500;
-      padding: 8px 16px;
-    }
-    .form-control {
-      border-radius: 6px;
-      border: 1px solid #d1d3e2;
-    }
-    .form-control:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    }
-    .nav-tabs-custom > .nav-tabs > li.active > a {
-      background-color: #667eea;
-      color: white;
-    }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-      background: #667eea !important;
-      border-color: #667eea !important;
-      color: white !important;
-    }
-    .sidebar-menu > li.active > a {
-      background-color: #34495e;
-      border-left: 3px solid #3498db;
-    }
-    .main-header .navbar {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .main-header .logo {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .plot-container {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .video-container {
-      background: white;
-      border-radius: 8px;
-      padding: 10px; /* Dikurangi padding untuk memberi ruang lebih pada video */
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .video-error {
-      color: #e74c3c;
-      font-weight: bold;
-      padding: 10px;
-      background: #f8d7da;
-      border-radius: 6px;
-    }
-    iframe.youtube-video {
-      max-width: 100%; /* Mengisi seluruh lebar container */
-      height: 600px; /* Tinggi tetap untuk tampilan dominan */
-      aspect-ratio: 16 / 9; /* Menjaga proporsi asli */
-      border-radius: 6px;
-      display: block;
-      margin: 0 auto;
-    }
-    @media (max-width: 768px) { /* Responsif untuk layar kecil */
-      iframe.youtube-video {
-        height: 300px; /* Mengurangi tinggi di layar kecil */
-      }
-    }
-    .alert-modern {
-      border-left: 4px solid #3498db;
-      background-color: #e8f4f8;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-    .alert-info-modern {
-      border-left-color: #17a2b8;
-      background-color: #e7f7f9;
-    }
-  "))
+        .content-wrapper, .right-side {
+          background-color: #f8f9fa;
+        }
+        .box {
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          border: 1px solid #e3e6f0;
+        }
+        .box-header {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-radius: 8px 8px 0 0;
+          padding: 15px;
+        }
+        .box-header .box-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+        .info-box {
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          border: none;
+          margin-bottom: 20px;
+        }
+        .info-box-icon {
+          border-radius: 8px 0 0 8px;
+        }
+        .btn {
+          border-radius: 6px;
+          font-weight: 500;
+          padding: 8px 16px;
+        }
+        .form-control {
+          border-radius: 6px;
+          border: 1px solid #d1d3e2;
+        }
+        .form-control:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .nav-tabs-custom > .nav-tabs > li.active > a {
+          background-color: #667eea;
+          color: white;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+          background: #667eea !important;
+          border-color: #667eea !important;
+          color: white !important;
+        }
+        .sidebar-menu > li.active > a {
+          background-color: #34495e;
+          border-left: 3px solid #3498db;
+        }
+        .main-header .navbar {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .main-header .logo {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .plot-container {
+          background: white;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .video-container {
+          background: white;
+          border-radius: 8px;
+          padding: 10px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          margin-bottom: 20px;
+          text-align: center;
+        }
+        .video-error {
+          color: #e74c3c;
+          font-weight: bold;
+          padding: 10px;
+          background: #f8d7da;
+          border-radius: 6px;
+        }
+        iframe.youtube-video {
+          max-width: 100%;
+          height: 600px;
+          aspect-ratio: 16 / 9;
+          border-radius: 6px;
+          display: block;
+          margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+          iframe.youtube-video {
+            height: 300px;
+          }
+        }
+        .alert-modern {
+          border-left: 4px solid #3498db;
+          background-color: #e8f4f8;
+          padding: 15px;
+          border-radius: 6px;
+          margin-bottom: 20px;
+        }
+        .alert-info-modern {
+          border-left-color: #17a2b8;
+          background-color: #e7f7f9;
+        }
+        .metadata-container {
+          background: white;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          margin-bottom: 20px;
+        }
+        .metadata-item {
+          margin-bottom: 15px;
+          line-height: 1.6;
+        }
+        .metadata-item strong {
+          color: #2c3e50;
+          display: inline-block;
+          width: 180px;
+        }
+        .metadata-item span {
+          color: #34495e;
+        }
+      "))
     ),
     
     tabItems(
-      # Dashboard tab
+      # ... (kode UI lainnya tetap sama)
+      
       tabItem(
         tabName = "dashboard",
         fluidRow(
           column(12,
                  div(
                    style = "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                   color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px;
-                   box-shadow: 0 4px 6px rgba(0,0,0,0.1);",
+             color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px;
+             box-shadow: 0 4px 6px rgba(0,0,0,0.1);",
                    div(
                      style = "text-align: center;",
                      h1(style = "margin: 0; font-weight: 300; font-size: 2.5em;",
                         icon("seedling", style = "margin-right: 15px;"),
                         "Climate Impact Analysis Dashboard"),
                      p(style = "font-size: 1.2em; margin-top: 15px; opacity: 0.9;",
-                       "Comprehensive analysis of climate variables impact on rice productivity across Indonesian provinces (2010-2024)")
+                       "Comprehensive analysis of climate variables impact on rice productivity across Indonesian provinces (2010-2024)"),
+                     p(style = "font-size: 1.1em; margin-top: 15px; opacity: 0.9;",
+                       "Penelitian ini menggunakan cakupan 34 provinsi karena rentang waktu analisis (2010-2024) dimulai jauh sebelum pemekaran empat provinsi baru di wilayah Papua pada akhir tahun 2022. Untuk menjaga validitas dan konsistensi perbandingan data historis (time-series), data untuk wilayah provinsi baru tersebut masih tercatat dalam data provinsi induknya (Papua dan Papua Barat), sesuai dengan ketersediaan data resmi dari BPS dan BMKG pada periode tersebut.")
                    )
                  )
           )
@@ -313,7 +340,6 @@ ui <- dashboardPage(
             solidHeader = TRUE,
             width = 12,
             
-            # Add tabbed interface with detailed and structured content
             tabsetPanel(
               id = "guide_tabs",
               type = "tabs",
@@ -420,6 +446,127 @@ ui <- dashboardPage(
           )
         )
       ),
+      
+      # Metadata tab
+      tabItem(
+        tabName = "metadata",
+        fluidRow(
+          box(
+            title = tagList(icon("info-circle"), " Metadata Variabel"),
+            status = "primary",
+            solidHeader = TRUE,
+            width = 12,
+            div(
+              class = "metadata-container",
+              h4("Informasi Metadata"),
+              p("Bagian ini menyediakan informasi metadata untuk variabel-variabel yang digunakan dalam analisis produktivitas padi dan faktor iklim di Indonesia (2010-2024). Pilih variabel di bawah untuk melihat detailnya."),
+              tabsetPanel(
+                id = "metadata_tabs",
+                type = "tabs",
+                
+                tabPanel("Produktivitas Padi",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Produktivitas Padi")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Hasil produksi padi (padi sawah dan padi ladang) yang dihitung per satuan luas lahan tanam.")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Jumlah produksi padi dalam satuan Gabah Kering Giling (GKG) yang dihasilkan per satuan luas lahan dalam satu tahun.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Jumlah")),
+                           div(class = "metadata-item", strong("Satuan:"), span("Kuintal per Hektar (Ku/Ha)")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Pusat Statistik (BPS)"))
+                         )
+                ),
+                
+                tabPanel("Curah Hujan Tahunan",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Curah Hujan Tahunan")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Akumulasi ketinggian air hujan yang terkumpul di tempat datar (tidak menguap, meresap, atau mengalir).")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Total jumlah air hujan yang turun di suatu wilayah provinsi selama satu tahun.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Tinggi")),
+                           div(class = "metadata-item", strong("Satuan:"), span("Milimeter (mm)")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)"))
+                         )
+                ),
+                
+                tabPanel("Jumlah Hari Hujan Tahunan",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Jumlah Hari Hujan Tahunan")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Frekuensi terjadinya hujan dalam satu periode.")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Jumlah total hari dalam setahun di mana terjadi hujan dengan curah hujan tercatat (biasanya > 1.0 mm) di suatu wilayah provinsi.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Jumlah")),
+                           div(class = "metadata-item", strong("Satuan:"), span("Hari")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)"))
+                         )
+                ),
+                
+                tabPanel("Suhu Udara Rata-Rata",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Suhu Udara Rata-Rata Tahunan")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Ukuran derajat panas atau dinginnya udara.")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Rata-rata dari suhu udara harian yang diukur selama satu tahun di suatu wilayah provinsi.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Temperatur")),
+                           div(class = "metadata-item", strong("Satuan:"), span("Derajat Celcius (°C)")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)"))
+                         )
+                ),
+                
+                tabPanel("Kelembaban Udara Rata-Rata",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Kelembaban Udara Rata-Rata Tahunan")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Kandungan uap air di udara, dinyatakan dalam persentase.")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Rata-rata persentase jumlah uap air yang terkandung di udara selama satu tahun, diukur di suatu wilayah provinsi.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Persentase")),
+                           div(class = "metadata-item", strong("Satuan:"), span("Persen (%)")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)"))
+                         )
+                ),
+                
+                tabPanel("Kecepatan Angin Rata-Rata",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Kecepatan Angin Rata-Rata Tahunan")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Kecepatan pergerakan aliran udara dari tekanan tinggi ke tekanan rendah.")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Rata-rata kecepatan angin yang diukur selama satu tahun di suatu wilayah provinsi.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Kecepatan")),
+                           div(class = "metadata-item", strong("Satuan:"), span("knot")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)"))
+                         )
+                ),
+                
+                tabPanel("Rata-Rata Penyinaran Matahari",
+                         div(
+                           class = "metadata-container",
+                           div(class = "metadata-item", strong("Nama Variabel:"), span("Rata-Rata Durasi Penyinaran Matahari Harian")),
+                           div(class = "metadata-item", strong("Konsep:"), span("Lamanya matahari bersinar terang tanpa terhalang awan.")),
+                           div(class = "metadata-item", strong("Definisi:"), span("Rata-rata durasi (lama waktu) matahari bersinar dalam satu hari, diakumulasikan selama setahun di suatu wilayah provinsi.")),
+                           div(class = "metadata-item", strong("Cakupan Wilayah:"), span("Provinsi di Indonesia")),
+                           div(class = "metadata-item", strong("Referensi Waktu:"), span("Tahunan, 2010-2024")),
+                           div(class = "metadata-item", strong("Ukuran:"), span("Durasi")),
+                           div(class = "metadata-item", strong("Satuan:"), span("Jam per Hari atau Persen (%)")),
+                           div(class = "metadata-item", strong("Sumber Konsep:"), span("Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)"))
+                         )
+                )
+              )
+            )
+          )
+        )
+      ),
+      
       # Data Explorer tab
       tabItem(
         tabName = "data",
@@ -670,6 +817,9 @@ ui <- dashboardPage(
     )
   )
 )
+
+# ... (kode server tetap sama, kecuali jika Anda ingin menambahkan fungsi server untuk tab Metadata)
+
 
 # Server
 server <- function(input, output, session) {
@@ -1252,10 +1402,10 @@ server <- function(input, output, session) {
         model <- lm(formula, data = plot_dat)
         par(mfrow = c(2, 2), oma = c(0, 0, 2, 0), mar = c(4, 4, 2, 1), bg = "#f8f9fa",
             col.axis = "#2c3e50", col.lab = "#2c3e50", fg = "#3498db")
-        plot(model, which = 1:4, caption = "", pch = 16, cex = 1.2, col = "#3498db", id.n = 0,
-             main = c("Residuals vs Fitted", "Normal Q-Q Plot", "Scale-Location", "Residuals vs Leverage"),
-             cex.main = 1.1)
-        abline(h = 0, col = "#e74c3c", lwd = 2)
+        plot(model, which = 1, main = "Residuals vs Fitted", pch = 16, cex = 1.2, col = "#3498db")
+        plot(model, which = 2, main = "Normal Q-Q Plot", pch = 16, cex = 1.2, col = "#3498db")
+        plot(model, which = 3, main = "Scale-Location", pch = 16, cex = 1.2, col = "#3498db")
+        plot(model, which = 4, main = "Residuals vs Leverage", pch = 16, cex = 1.2, col = "#3498db")
         title(paste("Regression Diagnostic Plots for", input$regresi_y, "~",
                     ifelse(input$regresi_jenis == "sederhana", input$regresi_x, paste(input$regresi_x, collapse = "+"))),
               outer = TRUE, cex.main = 1.3, col.main = "#2c3e50")
